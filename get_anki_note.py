@@ -67,7 +67,6 @@ def find_cards(anki_api_url):
         'version': 6,
         'params': {
             'query': 'deck:0_JLPT'
-            # 'query': 'deck:wrong'
         }
     }
     return make_request(anki_api_url, find_cards_data)
