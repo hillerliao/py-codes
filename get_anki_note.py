@@ -163,6 +163,8 @@ def fetch_and_display_card():
                     return
 
             card_content = card_data_response['result'][0]['fields']['Front']['value']
+            if '.mp3' in card_content:
+                card_content = card_data_response['result'][0]['fields']['Reading']['value']
             card_content_stripped = remove_html_tags(card_content)
             send_notification(card_content_stripped)
         else:
