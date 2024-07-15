@@ -117,7 +117,7 @@ def send_notification(card_content_stripped):
 
     Returns:
         None
-    """    
+    """
     payload = {
         "token": pushplus_token,
         "content": card_content_stripped,
@@ -125,11 +125,20 @@ def send_notification(card_content_stripped):
         "topic": "",
         "version": "personal"
     }
-    response = requests.post(pushplus_url, json=payload)
-    if response.status_code == 200:
-        print("Notification sent successfully")
-    else:
-        print(f"Failed to send notification. Status code: {response.status_code}")
+
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(pushplus_url, json=payload)
+            response.raise_for_status()
+            print("Notification sent successfully")
+            break
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to send notification. Attempt {attempt + 1} of {max_retries}. Error: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                print("Max retries reached. Failed to send notification.")
 
 
 
