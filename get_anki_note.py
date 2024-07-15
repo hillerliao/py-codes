@@ -16,8 +16,8 @@ def get_pushplus_config():
     """    
     config = configparser.ConfigParser()
     config.read('config.ini')
-    return config['pushplus']['pushplus_token'], config['pushplus']['pushplus_url']
-pushplus_token, pushplus_url = get_pushplus_config()
+    return config['pushplus']['pushplus_token'], config['pushplus']['pushplus_url'], config['line']['line_token'], config['line']['line_url']
+pushplus_token, pushplus_url, line_token, line_url = get_pushplus_config()
 
 
 def remove_html_tags(text):
@@ -139,6 +139,8 @@ def send_notification(card_content_stripped):
                 time.sleep(2 ** attempt)  # Exponential backoff
             else:
                 print("Max retries reached. Failed to send notification.")
+                payload = {'message': card_content_stripped}
+                r = requests.post(line_url, headers={'Authorization': f'Bearer {line_token}'}, params=payload)
 
 
 
